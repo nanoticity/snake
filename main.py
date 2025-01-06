@@ -137,10 +137,11 @@ async def main():
         ai_rect = pygame.Rect(100, 500, 200, 100)
         player_rect = pygame.Rect(500, 500, 200, 100)
         pygame.draw.rect(screen, (0, 0, 0), ai_rect, border_radius=20, width=10)
-        text("AI", (165, 525), 80, (0, 0, 0))
+        text("Hamilton", (125, 535), 50, (0, 0, 0))
         pygame.draw.rect(screen, (0, 0, 0), player_rect, border_radius=20, width=10)
         text("You", (550, 525), 80, (0, 0, 0))
         pygame.display.update()
+        await asyncio.sleep(0.02)
     
     if ai:
         snake_list = [Block(3, 0), Block(4, 0), Block(5, 0)]
@@ -217,6 +218,11 @@ async def main():
         pygame.display.flip()
         if not ai:
             await asyncio.sleep(0.1)
+        else:
+            if tummy < 30:
+                await asyncio.sleep(0.01)
+            else:
+                await asyncio.sleep(0)
         dir_changed = False
         remove_tail = True
 
