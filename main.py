@@ -70,9 +70,9 @@ class Apple:
                     self.reset()
                 except RecursionError:
                     screen.fill((255, 255, 255))
-                    r = pygame.Rect(160, 160, 600, 600)
+                    r = pygame.Rect(100, 100, 600, 600)
                     pygame.draw.rect(screen, (0, 0, 0), r, 20)
-                    text("You Won!", (300, 320), 50, (0, 0, 0))
+                    text("You Won!", (300, 380), 50, (0, 0, 0))
                     pygame.display.flip()
                     pygame.time.wait(1000)
                     sys.exit()
@@ -82,7 +82,7 @@ def end():
     screen.fill((255, 255, 255))
     music.stop()
     r = pygame.Rect(100, 100, 600, 600)
-    pygame.draw.rect(screen, (0, 0, 0), r, 20)
+    pygame.draw.rect(screen, (0, 0, 0), r, 20, border_radius=10)
     text("You got a score of " + str(tummy), (200, 380), 50, (0, 0, 0))
     pygame.display.flip()
     pygame.time.wait(1000)
@@ -105,17 +105,46 @@ async def main():
 
     crazy = False
     ai = False
-    if ai:
-        snake_list = [Block(3, 0), Block(4, 0), Block(5, 0)]
-        direction = Direction(-1, 0)
     
     count = 1
-    run = True
+    run = False
     dir_changed = False
     remove_tail_times = 0
     music.play(-1)
     step = 0
     remove_tail = True
+    title = True
+    while title:
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                title = False
+                run = False
+            if e.type == pygame.MOUSEBUTTONDOWN:
+                if e.button == 1:
+                    if e.pos[0] in range(100, 301):
+                        if e.pos[1] in range(500, 601):
+                            ai = True
+                            title = False
+                            run = True
+                    elif e.pos[0] in range(500, 701):
+                        if e.pos[1] in range(500, 601):
+                            ai = False
+                            title = False
+                            run = True
+        screen.fill((255, 255, 255))
+        text("Snake! By Nano", (125, 100), 100, (0, 0, 0))
+        text("Who plays it?", (225, 200), 75, (0, 0, 0))
+        ai_rect = pygame.Rect(100, 500, 200, 100)
+        player_rect = pygame.Rect(500, 500, 200, 100)
+        pygame.draw.rect(screen, (0, 0, 0), ai_rect, border_radius=20, width=10)
+        text("AI", (165, 525), 80, (0, 0, 0))
+        pygame.draw.rect(screen, (0, 0, 0), player_rect, border_radius=20, width=10)
+        text("You", (550, 525), 80, (0, 0, 0))
+        pygame.display.update()
+    
+    if ai:
+        snake_list = [Block(3, 0), Block(4, 0), Block(5, 0)]
+        direction = Direction(-1, 0)
     
     while run:
         for e in pygame.event.get():
