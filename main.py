@@ -122,23 +122,23 @@ async def main():
                 if e.button == 1:
                     if e.pos[0] in range(100, 301):
                         if e.pos[1] in range(500, 601):
-                            ai = True
+                            ai = False
                             title = False
                             run = True
                     elif e.pos[0] in range(500, 701):
                         if e.pos[1] in range(500, 601):
-                            ai = False
+                            ai = True
                             title = False
                             run = True
         screen.fill((255, 255, 255))
         text("Snake! By Nano", (125, 100), 100, (0, 0, 0))
         text("Who plays it?", (225, 200), 75, (0, 0, 0))
-        ai_rect = pygame.Rect(100, 500, 200, 100)
-        player_rect = pygame.Rect(500, 500, 200, 100)
+        player_rect = pygame.Rect(100, 500, 200, 100)
+        ai_rect = pygame.Rect(500, 500, 200, 100)
         pygame.draw.rect(screen, (0, 0, 0), ai_rect, border_radius=20, width=10)
-        text("Hamilton", (125, 535), 50, (0, 0, 0))
+        text("You", (145, 525), 80, (0, 0, 0))
         pygame.draw.rect(screen, (0, 0, 0), player_rect, border_radius=20, width=10)
-        text("You", (550, 525), 80, (0, 0, 0))
+        text("Hamilton*", (520, 535), 50, (0, 0, 0))
         pygame.display.update()
         await asyncio.sleep(0.02)
     
