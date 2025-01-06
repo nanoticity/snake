@@ -70,6 +70,7 @@ class Apple:
                     self.reset()
                 except RecursionError:
                     screen.fill((255, 255, 255))
+                    music.stop()
                     r = pygame.Rect(100, 100, 600, 600)
                     pygame.draw.rect(screen, (0, 0, 0), r, 20)
                     text("You Won!", (300, 380), 50, (0, 0, 0))
@@ -105,7 +106,7 @@ async def main():
 
     crazy = False
     ai = False
-    
+    pygame.display.get_caption("Snake!")
     count = 1
     run = False
     dir_changed = False
