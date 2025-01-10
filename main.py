@@ -83,7 +83,6 @@ class Apple:
                     pygame.draw.rect(screen, (0, 0, 0), r, 20)
                     text("You Won!", (300, 380), 50, (0, 0, 0))
                     pygame.display.flip()
-                    pygame.time.wait(1000)
                     sys.exit()
                     
 
@@ -93,7 +92,6 @@ def end():
     pygame.draw.rect(screen, (0, 0, 0), r, 20, border_radius=10)
     text("You got a score of " + str(tummy), (200, 380), 50, (0, 0, 0))
     pygame.display.flip()
-    pygame.time.wait(500)
     sys.exit(0)
     # pygame.quit()
 
