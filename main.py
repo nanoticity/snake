@@ -2,6 +2,7 @@
 import pygame, random, pygame.freetype, sys, pygame.mixer, asyncio
 pygame.init()
 pygame.mixer.init()
+pygame.font.init()
 
 SIZE = [800, 800]
 screen = pygame.display.set_mode(SIZE)
@@ -40,15 +41,23 @@ class Block:
     def draw(self):
         pygame.draw.rect(screen, (0, 255, 0), self.r)
         
+    def __str__(self):
+        return f"({self.x}, {self.y})"
+        
 class Direction:
     def __init__(self, x, y):
-        assert x == 0 and abs(y) == 1 or y == 0 and abs(x) == 1, "Not a direction vector"
         self.x = x
         self.y = y
     
     def is_opposite(self, other):
         opposite = Direction(self.x * -1, self.y * -1)
         return opposite.x  == other.x and opposite.y == other.y
+    
+    def is_valid(self):
+        return self.x != 0 or self.y != 0
+    
+    def __str__(self):
+        return f"{self.x}, {self.y}"
     
 class Apple:
     def __init__(self):
@@ -84,14 +93,21 @@ def end():
     pygame.draw.rect(screen, (0, 0, 0), r, 20, border_radius=10)
     text("You got a score of " + str(tummy), (200, 380), 50, (0, 0, 0))
     pygame.display.flip()
-    pygame.time.wait(1000)
-    sys.exit()
+    pygame.time.wait(500)
+    sys.exit(0)
+    # pygame.quit()
+
+def sign(x):
+    if x == 0:
+        return 0
+    else:
+        return x / abs(x)
 
 def text(to_write, pos, size, color):
-        font = pygame.font.Font(None, size)
-        text = font.render(to_write, True, color)
-        textpos = text.get_rect(x = pos[0], y = pos[1])
-        screen.blit(text, textpos)
+    font = pygame.font.Font(None, size)
+    text = font.render(to_write, True, color)
+    textpos = text.get_rect(x = pos[0], y = pos[1])
+    screen.blit(text, textpos)
         
 snake_list = [Block(6, 4), Block(5, 4), Block(4, 4)]
         
@@ -147,6 +163,7 @@ async def main():
         direction = Direction(-1, 0)
     
     while run:
+        mouse_moved = False
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 run = False
@@ -165,6 +182,24 @@ async def main():
                         dir_changed = True
                 except:
                     pass
+            
+            if e.type == pygame.MOUSEMOTION and not mouse_moved:
+                # Rel is relative coordinates, first is X, positive is right, second is Y, positive is down
+                x_motion = e.rel[0]
+                y_motion = e.rel[1]
+                    
+                if abs(x_motion) > abs(y_motion):
+                    y_motion = 0
+                else:
+                    x_motion = 0
+                x_motion = sign(x_motion)
+                y_motion = sign(y_motion)
+                new_dir = Direction(x_motion, y_motion)
+                if new_dir.is_valid() and not direction.is_opposite(new_dir):
+                    mouse_moved = True
+                    direction = new_dir
+                    dir_changed = True
+                
             if e.type == pygame.KEYDOWN and not ai:
                 if e.key == pygame.K_c:
                     crazy = not crazy
@@ -180,6 +215,7 @@ async def main():
             remove_tail = False
             remove_tail_times -= 1
             tummy += 1
+            
         snake_list = shift(snake_list, direction, remove_tail)
         for b in snake_list:
             b.draw()
@@ -211,8 +247,10 @@ async def main():
             count += 1
         if snake_list[0].x >= 20 or snake_list[0].x < 0 or snake_list[0].y >= 20 or snake_list[0].y < 0:
             end()
-        text("Score: " + str(tummy), (50, 50), 68, (0, 0, 0))
-        
+        try:
+            text("Score: " + str(tummy), (50, 50), 68, (0, 0, 0))
+        except:
+            pass
         grid()
         pygame.display.flip()
         if not ai:
